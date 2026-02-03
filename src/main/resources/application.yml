@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: avaliacoes
+  kafka:
+    bootstrap-servers: localhost:9092
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+server:
+  servlet:
+    context-path: /
+  port: 8085
+host:
+  servico:
+    unidades: http://localhost:8080
+    insumos: http://localhost:8082
