@@ -1,5 +1,5 @@
 package br.com.gerenciamento.services;
 
-public interface IGerenciadorInsumoService {
+public interface INotificacaoInsumoService {
 	void gerenciarInsumos();
 }

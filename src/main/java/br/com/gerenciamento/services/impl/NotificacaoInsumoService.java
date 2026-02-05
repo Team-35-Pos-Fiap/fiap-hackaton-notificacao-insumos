@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import br.com.gerenciamento.dto.InsumoDto;
 import br.com.gerenciamento.dto.UnidadeDto;
 import br.com.gerenciamento.services.IDadosInsumoService;
-import br.com.gerenciamento.services.IGerenciadorInsumoService;
+import br.com.gerenciamento.services.INotificacaoInsumoService;
 import br.com.gerenciamento.services.IInsumoService;
 import br.com.gerenciamento.services.IUnidadeService;
 
 @Service
-public class GerenciadorInsumoService implements IGerenciadorInsumoService{
+public class NotificacaoInsumoService implements INotificacaoInsumoService{
 	
 	@Autowired
 	private IUnidadeService unidadeService;

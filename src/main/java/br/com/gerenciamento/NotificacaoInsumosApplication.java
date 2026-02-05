@@ -6,9 +6,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients
-public class GerenciamentoInsumosApplication {
+public class NotificacaoInsumosApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GerenciamentoInsumosApplication.class, args);
+		SpringApplication.run(NotificacaoInsumosApplication.class, args);
 	}
 }

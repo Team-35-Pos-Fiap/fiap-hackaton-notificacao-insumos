@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.gerenciamento.services.IGerenciadorInsumoService;
+import br.com.gerenciamento.services.INotificacaoInsumoService;
 
 @RestController
 @RequestMapping("/insumos")
-public class GerenciadorInsumosResource {
+public class NotificacaoInsumosResource {
 
 	@Autowired
-	private IGerenciadorInsumoService gerenciadorInsumoService;
+	private INotificacaoInsumoService gerenciadorInsumoService;
 	
 	@PostMapping
 	public void gerenciarInsumos() {
