@@ -10,11 +10,11 @@ import br.com.gerenciamento.services.IMensagemService;
 @Service
 public class MensagemService implements IMensagemService {
 
-	@Autowired
-	private KafkaTemplate<String, MensagemDto> kafkaTemplate;
+	//@Autowired
+	//private KafkaTemplate<String, MensagemDto> kafkaTemplate;
 	
 	@Override
 	public void armazenar(MensagemDto mensagem) {
-		kafkaTemplate.send("insumos", mensagem);
+	//	kafkaTemplate.send("insumos", mensagem);
 	}
 }

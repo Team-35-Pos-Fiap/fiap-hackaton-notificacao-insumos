@@ -9,8 +9,10 @@ spring:
 server:
   servlet:
     context-path: /
-  port: 8085
-host:
-  servico:
-    unidades: http://localhost:8080
-    insumos: http://localhost:8082
+  port: 8087
+servico:
+  unidades: http://localhost:8086
+  estoque: http://localhost:8085
+  usuarios: http://localhost:8082
+  inteligencia: http://localhost:8082
+  insumos: http://localhost:8080

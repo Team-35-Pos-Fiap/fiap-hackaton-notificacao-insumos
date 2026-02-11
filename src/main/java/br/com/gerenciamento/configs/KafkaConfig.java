@@ -24,7 +24,7 @@ public class KafkaConfig {
 	@Value(value = "")
 	private String hostKafka;
 	
-	@Bean
+	/*@Bean
 	public KafkaAdmin kafkaAdmin() {
 		Map<String, Object> propriedades = new HashMap<>();
 		
@@ -53,5 +53,5 @@ public class KafkaConfig {
 	@Bean
 	public KafkaTemplate<String, MensagemDto> insumosTemplate() {
 		return new KafkaTemplate<>(insumosProducerFactory());
-	}
+	}*/
 }

@@ -4,6 +4,7 @@ import br.com.gerenciamento.dto.InsumoDto;
 import br.com.gerenciamento.dto.UnidadeDto;
 
 public interface IDadosInsumoService {
-	void verificarValidade(InsumoDto medicamento, UnidadeDto unidade);
-	void verificarQuantidade(InsumoDto medicamento, UnidadeDto unidade);
+	void verificarValidade(InsumoDto insumo, UnidadeDto unidade);
+	void verificarQuantidade(InsumoDto insumo, UnidadeDto unidade);
+    void verificarRisco(InsumoDto insumo, UnidadeDto unidade);
 }
