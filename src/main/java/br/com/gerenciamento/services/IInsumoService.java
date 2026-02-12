@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.com.gerenciamento.dto.InsumoDto;
 
-@FeignClient(name = "insumos-service", url = "${servico.insumos}")
+@FeignClient(name = "insumos-service")
 public interface IInsumoService {
 
 	@GetMapping("/insumos/{id}")

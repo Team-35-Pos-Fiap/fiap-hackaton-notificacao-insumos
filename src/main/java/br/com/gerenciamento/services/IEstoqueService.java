@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.com.gerenciamento.dto.Item;
 
-@FeignClient(name = "estoque-service", url = "${servico.estoque}")
+@FeignClient(name = "estoque-service")
 public interface IEstoqueService {
 
 	@GetMapping("/estoque/{id-unidade}/insumos")

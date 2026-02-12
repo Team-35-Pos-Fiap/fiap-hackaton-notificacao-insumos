@@ -2,21 +2,21 @@ spring:
   application:
     name: notificacao-insumos
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
 server:
   servlet:
     context-path: /
-  port: 8086
+  port: 0
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka-service:8761/eureka
   instance:
-    hostname: localhost
+    hostname: notificacao-insumos
 
 servico:
   unidades: http://localhost:8086
