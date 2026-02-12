@@ -21,7 +21,7 @@ import br.com.gerenciamento.dto.MensagemDto;
 @Configuration
 public class KafkaConfig {
 
-	@Value(value = "")
+	@Value(value = "${spring.kafka.bootstrap-servers}")
 	private String hostKafka;
 	
 	/*@Bean

@@ -1,114 +1,99 @@
 package br.com.gerenciamento.services.impl;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.gerenciamento.dto.InsumoDto;
+import br.com.gerenciamento.dto.InsumoComRiscoDto;
 import br.com.gerenciamento.dto.MensagemDto;
 import br.com.gerenciamento.dto.UnidadeDto;
-import br.com.gerenciamento.dto.UsuarioDto;
+import br.com.gerenciamento.dto.UnidadeTransferenciaDto;
 import br.com.gerenciamento.services.IDadosInsumoService;
-import br.com.gerenciamento.services.IMensagemService;
-import br.com.gerenciamento.services.IUsuarioService;
+import br.com.gerenciamento.services.IEmailService;
 
 @Service
 public class DadosInsumoService implements IDadosInsumoService {
+	//@Autowired
+	//private IMensagemService mensagemService;
 
 	@Autowired
-	private IMensagemService mensagemService;
+	private IEmailService emailService;
+	
+	private static final String TITULO_MENSAGEM_INSUMO_RISCO_MEDIO = "Insumo com risco médio.";
 
-	@Autowired
-	private IUsuarioService usuarioService;
-
-	private String mensagemInsumoVencido = """
-				O insumo %s - id: %s da unidade %s - id: %s venceu na data %s.
+	private static final String TITULO_MENSAGEM_INSUMO_RISCO_ALTO = "Insumo com risco alto.";
+	
+	private String mensagemInsumoComRiscoMedio = """		
+		<html>
+			<body>
+				Foi identificado que o insumo %s - %s da unidade %s está com risco médio. <br/>
+				
+				Quantidade necessária: %d. <br/>
+				
+				O insumo pode ser obtido das seguintes unidades: <br/>
+				
+				%s
+			</body>
+		</html>
+		""";
+	
+	private String mensagemInsumoComRiscoAlto = """		
+			<html>
+				<body>
+					Foi identificado que o insumo %s - %s da unidade %s está com risco alto, faltando %d dias para o vencimento.
+				</body>
+			</html>
 			""";
-
-	private String mensagemInsumoAVencer = """
-				O insumo %s - id: %s da unidade %s - id: %s está vencendo na data %s.
-			""";
-
-	private String mensagemInsumoComQuantidadeMinimaAtingida = """
-				O insumo %s - id: %s da unidade %s - id: %s está com a quantidade mínima atingida.
-			""";
-
-	private String tituloMensagemInsumoVencido = "Insumo Vencido";
-	private String tituloMensagemInsumoAVencer = "Insumo a Vencer";
-	private String tituloMensagemInsumoComQuantidadeMinimaAtingida = "Insumo com Quantidade Mínima Atingida";
-	private String tituloMensagemInsumoEmRisco = "Insumo em Risco";
 
 	@Override
-	public void verificarValidade(InsumoDto insumo, UnidadeDto unidade) {
-		if (isInsumoVencido(insumo.dataVencimento())) {
-			mensagemService.armazenar(montaMensagemInsumoVencido(insumo, unidade));
-		} else if (isInsumoAVencer(insumo.dataVencimento())) {
-			mensagemService.armazenar(montaMensagemInsumoAVencer(insumo, unidade));
+	public void verificarRisco(InsumoComRiscoDto insumo, UnidadeDto unidade) {
+		if(insumo.risco().equals("MEDIO")) {
+			trataRiscoMedio(insumo, unidade);
+		} else {
+			trataRiscoAlto(insumo, unidade);
 		}
 	}
 
-	@Override
-	public void verificarQuantidade(InsumoDto insumo, UnidadeDto unidade) {
-		if (isQuantidadeMinimaAtingida(insumo)) {
-			mensagemService.armazenar(montaMensagemInsumoComQuantidadeMinimaAtingida(insumo, unidade));
-		}
+	private void trataRiscoAlto(InsumoComRiscoDto insumo, UnidadeDto unidade) {
+		//salvaMensagem(montaMensagemRiscoAlto(insumo), TITULO_MENSAGEM_INSUMO_RISCO_ALTO, unidade.email());
+		
+		enviarMensagem(montaMensagemRiscoAlto(insumo, unidade), TITULO_MENSAGEM_INSUMO_RISCO_ALTO, unidade.email());
 	}
 
-	private LocalDate recuperarDataAtual() {
-		return LocalDate.now();
+	private void trataRiscoMedio(InsumoComRiscoDto insumo, UnidadeDto unidade) {
+		//salvaMensagem(montaMensagemRiscoMedio(insumo), TITULO_MENSAGEM_INSUMO_RISCO_MEDIO, unidade.email());
+		
+		enviarMensagem(montaMensagemRiscoMedio(insumo, unidade), TITULO_MENSAGEM_INSUMO_RISCO_MEDIO, unidade.email());
+	}
+	
+	/*private void salvaMensagem(String mensagem, String titulo, String destinatario) {
+		mensagemService.armazenar(montaMensagem(mensagem, titulo, destinatario));
+	}*/
+	
+	private void enviarMensagem(String mensagem, String titulo, String destinatario) {
+		emailService.enviarEmail(montaMensagem(mensagem, destinatario, titulo));
 	}
 
-	private boolean isInsumoVencido(LocalDate data) {
-		return data.isBefore(recuperarDataAtual());
+	private String montaMensagemUnidadesParaTransferencia(List<UnidadeTransferenciaDto> dadosUnidades) {
+		String mensagem = "Unidade: %s - Quantidade: %d.";
+		
+		return dadosUnidades.stream()
+							.map(d -> "  <li>" + String.format(mensagem, d.unidade().nome(), d.quantidade()) + "  </li>")
+							.collect(Collectors.joining("\n", "<ul>\n", "\n</ul>"));		
 	}
 
-	private boolean isInsumoAVencer(LocalDate data) {
-		return data.isAfter(recuperarDataAtual().minusDays(30)) && data.isBefore(recuperarDataAtual());
+	private String montaMensagemRiscoMedio(InsumoComRiscoDto insumo, UnidadeDto unidade) {
+		return String.format(mensagemInsumoComRiscoMedio, insumo.dados().id(), insumo.dados().nome(), unidade.nome(),
+							 insumo.quantidadeNecessaria(), montaMensagemUnidadesParaTransferencia(insumo.unidadesTransferencia()));
 	}
-
-	private boolean isQuantidadeMinimaAtingida(InsumoDto insumo) {
-		return false;// return insumo.quantidade() <= insumo.quantidadeMinima();
+	
+	private String montaMensagemRiscoAlto(InsumoComRiscoDto insumo, UnidadeDto unidade) {
+		return String.format(mensagemInsumoComRiscoAlto, insumo.dados().id(), insumo.dados().nome(), unidade.nome(), insumo.dias());
 	}
-
+	
 	private MensagemDto montaMensagem(String mensagem, String destinatario, String titulo) {
 		return new MensagemDto(mensagem, destinatario, titulo);
-	}
-
-	private MensagemDto montaMensagemInsumoVencido(InsumoDto insumo, UnidadeDto unidade) {
-		return montaMensagem(atualizaMensagemValidadeInsumo(mensagemInsumoVencido, insumo, unidade),
-				buscarUsuario(unidade.idResponsavel()).email(), tituloMensagemInsumoVencido);
-	}
-
-	private MensagemDto montaMensagemInsumoAVencer(InsumoDto insumo, UnidadeDto unidade) {
-		return montaMensagem(atualizaMensagemValidadeInsumo(mensagemInsumoAVencer, insumo, unidade),
-				buscarUsuario(unidade.idResponsavel()).email(), tituloMensagemInsumoAVencer);
-	}
-
-	private MensagemDto montaMensagemInsumoComQuantidadeMinimaAtingida(InsumoDto insumo, UnidadeDto unidade) {
-		return montaMensagem(
-				atualizaMensagemQuantidadeInsumo(mensagemInsumoComQuantidadeMinimaAtingida, insumo, unidade),
-				buscarUsuario(unidade.idResponsavel()).email(), tituloMensagemInsumoComQuantidadeMinimaAtingida);
-	}
-
-	private String atualizaMensagemValidadeInsumo(String mensagem, InsumoDto insumo, UnidadeDto unidade) {
-		return String.format(mensagem, insumo.nome(), insumo.id(), unidade.nome(), unidade.id(),
-				insumo.dataVencimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-	}
-
-	private String atualizaMensagemQuantidadeInsumo(String mensagem, InsumoDto insumo, UnidadeDto unidade) {
-		return String.format(mensagem, insumo.nome(), insumo.id(), unidade.nome(), unidade.id());
-	}
-
-	@Override
-	public void verificarRisco(InsumoDto insumo, UnidadeDto unidade) {
-		throw new UnsupportedOperationException("Unimplemented method 'verificarRisco'");
-	}
-
-	private UsuarioDto buscarUsuario(UUID id) {
-		return usuarioService.buscarUsuario(id);
 	}
 }

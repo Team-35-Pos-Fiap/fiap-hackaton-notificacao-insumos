@@ -8,7 +8,7 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
 server:
   servlet:
-    context-path: /
+    context-path: /notificacao
   port: 8086
 
 eureka:
@@ -19,8 +19,10 @@ eureka:
     hostname: localhost
 
 servico:
-  unidades: http://localhost:8086
-  estoque: http://localhost:8085
-  usuarios: http://localhost:8082
-  inteligencia: http://localhost:8082
-  insumos: http://localhost:8080
+  unidades: http://localhost:8098
+  inteligencia: http://localhost:8084
+
+app:
+  email:
+    remetente: posfiapteam35@gmail.com
+    senha: jbvp ugel gull ksqr
