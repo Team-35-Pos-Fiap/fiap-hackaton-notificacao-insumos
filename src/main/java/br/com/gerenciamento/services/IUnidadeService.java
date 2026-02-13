@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import br.com.gerenciamento.dto.UnidadeSaudeDto;
 
-@FeignClient(name = "unidades-service", url = "${servico.unidades}")
+@FeignClient(name = "estabelecimento-saude")
 public interface IUnidadeService {
 
 	@GetMapping("/estabelecimento-saude/estabelecimentos")

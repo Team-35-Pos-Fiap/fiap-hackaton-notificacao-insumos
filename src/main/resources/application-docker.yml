@@ -8,7 +8,7 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
 server:
   servlet:
-    context-path: /
+    context-path: /notificacao
   port: 0
 
 eureka:
@@ -17,10 +17,3 @@ eureka:
       defaultZone: http://eureka-service:8761/eureka
   instance:
     hostname: notificacao-insumos
-
-servico:
-  unidades: http://localhost:8086
-  estoque: http://localhost:8085
-  usuarios: http://localhost:8082
-  inteligencia: http://localhost:8082
-  insumos: http://localhost:8080

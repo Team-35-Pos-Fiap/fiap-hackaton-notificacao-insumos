@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.com.gerenciamento.dto.DadosInsumosComRiscoDto;
 
-@FeignClient(name = "inteligencia-service", url = "${servico.inteligencia}")
+@FeignClient(name = "inteligencia-service")
 public interface IInteligenciaInsumoService {
 	
 	@GetMapping("/inteligencia/unidade/{id-unidade}")
